@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.chavoris.lawson</groupId>
+  <groupId>jar</groupId>
   <artifactId>JavaDeepDive</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
@@ -25,7 +25,7 @@
 <!-- Not sure about these spring repos copied from cox-->
   <repositories>
 
-    <repository>
+    <!-- <repository>
       <id>spring-snapshots</id>
       <url>http://repo.spring.io/snapshot</url>
       <releases>
@@ -34,9 +34,9 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>
+    </repository> -->
 
-    <repository>
+    <!-- <repository>
       <id>spring-milestones</id>
       <url>http://repo.spring.io/milestones</url>
       <releases>
@@ -45,9 +45,9 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>
+    </repository> -->
 
-    <repository>
+    <!-- <repository>
       <id>central</id>
       <url>repo.maven.apache.org/maven2</url>
       <releases>
@@ -56,13 +56,13 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </repository>
+    </repository> -->
 
   </repositories>
 
   <pluginRepositories>
 
-    <pluginRepository>
+    <!-- <pluginRepository>
       <id>central</id>
       <url>repo.maven.apache.org/maven2</url>
       <releases>
@@ -71,9 +71,9 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </pluginRepository>
+    </pluginRepository> -->
 
-    <pluginRepository>
+    <!-- <pluginRepository>
       <id>spring-snapshots</id>
       <url>http://repo.spring.io/snapshot</url>
       <releases>
@@ -82,11 +82,18 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-    </pluginRepository>
+    </pluginRepository> -->
 
   </pluginRepositories>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.12</version>
+    </dependency>
+
 
     <dependency>
       <groupId>junit</groupId>
@@ -96,41 +103,36 @@
     </dependency>
 
     <!-- added from cox-->
-    <dependency>
+    <!-- <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-    </dependency>
+    </dependency> -->
 
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-
-    <dependency>
+    <!-- <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20180813</version>
-    </dependency>
+    </dependency> -->
 
-    <dependency>
+    <!-- <dependency>
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1</version>
-    </dependency>
+    </dependency> -->
 
     <!-- spring boot stuff-->
-    <dependency>
+    <!-- <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
-    </dependency>
+    </dependency> -->
 
   </dependencies>
 
 
   <build>
 
-    <finalName>JavaDeepDive</finalName>
+    <!-- <finalName>JavaDeepDive</finalName>
 
     <resources>
       <resource>
@@ -140,14 +142,14 @@
         </excludes>
         <filtering>true</filtering>
       </resource>
-    </resources>
+    </resources> -->
 
-    <plugins>
+    <!-- <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
-    </plugins>
+    </plugins> -->
     
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>

@@ -1,2 +1,3 @@
 jar\App.class
-passwordManagement.class
+passwordmanager\app\Application.class
+passwordmanager\model\User.class

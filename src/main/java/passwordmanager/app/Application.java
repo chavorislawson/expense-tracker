@@ -1,8 +1,8 @@
-package passwordManager;
+package passwordmanager.app;
 
-import java.util.*;
+//import java.util.Scanner;
 
-public class passwordManagement{
+public class Application{
 
 	public static void main(String[] args) {
 		
