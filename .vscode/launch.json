@@ -6,9 +6,9 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - passwordManagement",
+            "name": "CodeLens (Launch) - Application",
             "request": "launch",
-            "mainClass": "passwordManager.passwordManagement",
+            "mainClass": "passwordmanager.app.Application",
             "projectName": "JavaDeepDive"
         },
         {
