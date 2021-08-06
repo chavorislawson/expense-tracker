@@ -1,3 +1,3 @@
-# Java Deep Dive
+# Expense Tracker
 
-This is my repository where I explore all things Java related through projects
+Expense Tracker Application
