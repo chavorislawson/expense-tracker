@@ -113,8 +113,7 @@ $RECYCLE.BIN/
 /target/
 .idea/
 docs/
-src/main/java/jar/exam.md
-src/main/java/javaTuts/
-src/main/java/passwordmanager/
-src/main/java/pomodoroClock/
-src/main/java/tictactoe/
+src/main/java/com/lawson/app/exam.md
+!/src/main/java/com/lawson/javaTuts/
+!/src/main/java/com/lawson/passwordmanager/
+!/src/main/java/com/lawson/expenseTracker/interfaces/

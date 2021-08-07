@@ -1,4 +1,4 @@
-package jar;
+package com.lawson.app;
 
 import static org.junit.Assert.assertTrue;
 
