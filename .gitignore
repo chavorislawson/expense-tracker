@@ -113,7 +113,3 @@ $RECYCLE.BIN/
 /target/
 .idea/
 docs/
-src/main/java/com/lawson/app/exam.md
-!/src/main/java/com/lawson/javaTuts/
-!/src/main/java/com/lawson/passwordmanager/
-!/src/main/java/com/lawson/expenseTracker/interfaces/
