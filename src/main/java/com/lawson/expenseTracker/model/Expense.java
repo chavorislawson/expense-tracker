@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Expense {
-
+    private Long id;
     private List<Item> items;
 
     /**
@@ -102,6 +102,13 @@ public class Expense {
         this.purchaseLocation = purchaseLocation;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 //    @Override
 //    public String toString() {
 //        return "Expense{" +
