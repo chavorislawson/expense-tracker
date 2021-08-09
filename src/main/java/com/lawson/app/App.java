@@ -7,9 +7,8 @@ import com.lawson.expenseTracker.model.Item;
 import com.lawson.expenseTracker.enums.ItemCategory;
 import com.lawson.expenseTracker.enums.PurchaseMethod;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * @Author Chavoris Lawson
+ * @author Chavoris Lawson
  *
  * Application Class for Expense Tracker
  *
@@ -30,28 +29,33 @@ public class App {
         SqlConnector.connect();
         //readExpenses(); //Type check entries
     }
+
     private static void readExpenses(){// Debating on if this should call more than one method or have this method return a type
         List<Expense> expenses = new ArrayList<>();
         Scanner s = new Scanner(System.in);
         String text;
+        Expense expense = null;
+        List<Item> items = null;
 
         do{
-            Expense expense = enterExpenses();
-            List<Item> items = expense.getItems();
+            try{
+                expense = enterExpenses();
+                items = expense.getItems();
+            } catch(ParseException | NullPointerException pe){
+                pe.printStackTrace();
+            }
+
             System.out.println("Help:\n" +
                     "Press \"enter\" to continue\n"+
                     "Type \"-e\" to exit.\n");
             text = s.nextLine();
+
             try {
                 for (Item i : items) {
                     System.out.println(i.getName());
                     System.out.println(i.getDescription());
                     System.out.println(i.getCategory());
                     System.out.println(i.getPrice());
-                    System.out.println(i.getPurchaseDate());
-                    System.out.println(i.getPurchaseTime());
-                    System.out.println(i.getPurchasePlace());
-                    System.out.println(i.getPurchaseLocation());
                 }
                 System.out.println();
                 System.out.println(expense.getCategory());
@@ -69,22 +73,27 @@ public class App {
         storeExpenses(expenses);
     }
 
-    private static Expense enterExpenses() {
+    private static Expense enterExpenses() throws ParseException {
         Scanner s = new Scanner(System.in);
+        SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat sdft = new SimpleDateFormat("HH:mm");
+        int counter=1;
+        List<Item> eItems;
+        double totalPrice = 0;
+        Date date;
+        Date time;
+        String place;
+        String location;
+        String text;
+        String[] items;
 
         System.out.println("Enter Expense Information:");
         System.out.println("Items (Enter as comma separated list): ");
-        String text = s.nextLine();
-        String[] items = text.split(",");
+        text = s.nextLine();
+        items = text.split(",");
         // if contains number,  character, or excessive spaces in name
-        List<Item> eItems = null;
-        try {
-            eItems = enterItems(items, s);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        eItems = enterItems(items, s);
 
-        int counter=1;
         System.out.println("Expense Category: ");
         for(ExpenseCategory e: ExpenseCategory.values()){
             System.out.println("Enter " + counter + " - " + e);
@@ -99,38 +108,37 @@ public class App {
             counter++;
         }
         PurchaseMethod purchaseMethod = convertPurchaseMethodCategory(s.nextInt());
+        s.nextLine();
 
-        double totalPrice = 0;
-        for (int i = 0; i < eItems.size(); i++) {
-            totalPrice += eItems.get(i).getPrice();
+        for (Item eItem : eItems) {
+            totalPrice += eItem.getPrice();
         }
-        Item firstItem = eItems.get(0);
-        Date date = firstItem.getPurchaseDate();
-        Date time = firstItem.getPurchaseTime();
-        String place = firstItem.getPurchasePlace();
-        String location = firstItem.getPurchaseLocation();
+        System.out.println("Expense purchase date (MM-dd-yyyy):");
+        date = sdfd.parse(s.nextLine());
+        System.out.println("Expense purchase time (HH:mm):");
+        time = sdft.parse(s.nextLine());
+        System.out.println("Expense purchase place:");
+        place = s.nextLine();
+        System.out.println("Expense purchase location:");
+        location = s.nextLine();
 
         return new Expense(eItems, eCat, purchaseMethod, totalPrice, date, time,
                 place, location);
     }
 
-    private static List<Item> enterItems(String[] items, Scanner s) throws ParseException {
+    private static List<Item> enterItems(String[] items, Scanner s) {
         List<Item> eItems = new ArrayList<>();
-        SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
-        SimpleDateFormat sdft = new SimpleDateFormat("HH:mm");
         String description;
         ItemCategory category;
         double price;
-        Date date;
-        Date time;
-        String place;
-        String location;
         int counter = 1;
+
         for(String i: items){
             i = i.trim();
             System.out.println(i +" Description:");
             description = s.nextLine();
             System.out.println(i +" Category:");
+
             for(ItemCategory ic: ItemCategory.values()){
                 System.out.println("Enter " + counter + " - " + ic);
                 counter++;
@@ -141,23 +149,7 @@ public class App {
             s.nextLine();
             counter = 1;
 
-            if(eItems.isEmpty()) {
-                System.out.println(i + " purchase date (MM-dd-yyyy):");
-                date = sdfd.parse(s.nextLine());
-                System.out.println(i + " purchase time (HH:mm):");
-                time = sdft.parse(s.nextLine());
-                System.out.println(i + " place:");
-                place = s.nextLine();
-                System.out.println(i + " location:");
-                location = s.nextLine();
-            }else{
-                Item firstItem = eItems.get(0);
-                date = firstItem.getPurchaseDate();
-                time = firstItem.getPurchaseTime();
-                place = firstItem.getPurchasePlace();
-                location = firstItem.getPurchaseLocation();
-            }
-                eItems.add(new Item(i, description, category, price, date,time, place, location));
+            eItems.add(new Item(i, description, category, price));
         }
         return eItems;
     }
@@ -184,38 +176,64 @@ public class App {
     }
 
     private static boolean  storeExpenses(List<Expense> expenses){
-        File exp = new File("C:\\expense-tracker\\docs\\expense-tracker\\output.txt");
-        PrintWriter pw = null;
-        Scanner s = null;
         try {
-            pw = new PrintWriter(exp);
-            s =  new Scanner(exp);
-        } catch (FileNotFoundException fnf){
-            fnf.printStackTrace();
-        }
-
-        for(Expense e: expenses){
-            pw.println(e.getPurchaseMethod());
-            pw.println(e.getTotalPrice());
-            pw.println(e.getDate());
-            pw.println(e.getPurchasePlace());
-            pw.println(e.getPurchaseLocation());
-            pw.println(e.getPurchaseTime());
-            for(Item i: e.getItems()){
-                pw.println(i.getName());
-                pw.println(i.getDescription());
-                pw.println(i.getCategory());
-                pw.println(i.getPrice());
+            FileWriter out = new FileWriter("C:\\expense-tracker\\docs\\expense-tracker\\output.txt", true);
+            FileWriter exp = new FileWriter("C:\\expense-tracker\\docs\\expense-tracker\\expenses.txt", true);
+            FileWriter it = new FileWriter("C:\\expense-tracker\\docs\\expense-tracker\\items.txt", true);
+            BufferedWriter bwOut = new BufferedWriter(out);
+            BufferedWriter bwExp = new BufferedWriter(exp);
+            BufferedWriter bwIt = new BufferedWriter(it);
+            PrintWriter outPw;
+            PrintWriter expPw;
+            PrintWriter itPw;
+            Scanner s = null;
+            Long counter = 1L;
+            outPw = new PrintWriter(bwOut);
+            expPw = new PrintWriter(bwExp);
+            itPw = new PrintWriter(bwIt);
+            //s = new Scanner(""); //does this work?
+            try {
+                for (Expense e : expenses) {
+                    e.setId(counter);
+                    expPw.print(e.getId() + " ");
+                    expPw.print(e.getCategory());
+                    expPw.print(e.getPurchaseMethod() + " ");
+                    expPw.print(e.getTotalPrice() + " ");
+                    expPw.print(e.getDate() + " ");
+                    expPw.print(e.getPurchasePlace() + " ");
+                    expPw.print(e.getPurchaseLocation() + " ");
+                    expPw.print(e.getPurchaseTime());
+                    expPw.println();
+                    for (Item i : e.getItems()) {
+                        i.setExpenseId(e.getId());
+                        itPw.print(i.getExpenseId() + " ");
+                        itPw.print(i.getName() + " ");
+                        itPw.print(i.getDescription() + " ");
+                        itPw.print(i.getCategory() + " ");
+                        itPw.print(i.getPrice() + " ");
+                        itPw.println();
+                    }
+                    counter++;
+                }
+                expPw.close();
+                itPw.close();
+            } catch (NullPointerException np) {
+                np.printStackTrace();
             }
-        }
-        pw.close();
 
-        if(s.hasNext()) {
-            while (s.hasNext()) {
-                System.out.println(s.nextLine());
-            }
-            s.close();
-            return true;
+//            try {
+//                if (s.hasNext()) {
+//                    while (s.hasNext()) {
+//                        System.out.println(s.nextLine());
+//                    }
+//                    s.close();
+//                    return true;
+//                }
+//            } catch (NullPointerException np) {
+//                np.printStackTrace();
+//            }
+        }catch(IOException io){
+            io.printStackTrace();
         }
         return false;
     }

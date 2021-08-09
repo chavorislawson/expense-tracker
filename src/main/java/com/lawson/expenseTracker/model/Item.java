@@ -5,7 +5,7 @@ import com.lawson.expenseTracker.enums.ItemCategory;
 import java.util.Date;
 
 public class Item {
-
+    private Long expenseId;
     private String name;
     private String description;
     private ItemCategory category;
@@ -27,15 +27,11 @@ public class Item {
 
     public Item(){}
 
-    public Item(String name, String description, ItemCategory category, double price, Date purchaseDate, Date purchaseTime, String purchasePlace, String purchaseLocation) {
+    public Item(String name, String description, ItemCategory category, double price) {
         this.name = name;
         this.description = description;
         this.category = category;
         this.price = price;
-        this.purchaseDate = purchaseDate;
-        this.purchaseTime = purchaseTime;
-        this.purchasePlace = purchasePlace;
-        this.purchaseLocation = purchaseLocation;
     }
 
     public String getName() {
@@ -100,5 +96,13 @@ public class Item {
 
     public void setPurchaseLocation(String purchaseLocation) {
         this.purchaseLocation = purchaseLocation;
+    }
+
+    public Long getExpenseId() {
+        return expenseId;
+    }
+
+    public void setExpenseId(Long expenseId) {
+        this.expenseId = expenseId;
     }
 }
