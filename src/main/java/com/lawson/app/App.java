@@ -1,5 +1,6 @@
 package com.lawson.app;
 
+import com.lawson.expenseTracker.database.SqlConnector;
 import com.lawson.expenseTracker.enums.ExpenseCategory;
 import com.lawson.expenseTracker.model.Expense;
 import com.lawson.expenseTracker.model.Item;
@@ -25,7 +26,9 @@ import java.util.Scanner;
 public class App {
 
     public static void main(String[] args) {
-        readExpenses(); //Type check entries
+        Math.abs(10);
+        SqlConnector.connect();
+        //readExpenses(); //Type check entries
     }
     private static void readExpenses(){// Debating on if this should call more than one method or have this method return a type
         List<Expense> expenses = new ArrayList<>();
