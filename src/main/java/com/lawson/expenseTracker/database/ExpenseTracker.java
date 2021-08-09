@@ -35,8 +35,8 @@ public class ExpenseTracker {
         Expense expense;
         List<Item> eItems;
         double totalPrice = 0;
-        Date date;
-        Date time;
+        String date;
+        String time;
         String place;
         String location;
         String text;
@@ -68,10 +68,10 @@ public class ExpenseTracker {
         for (Item eItem : eItems) {
             totalPrice += eItem.getPrice();
         }
-        System.out.println("Expense purchase date (MM-dd-yyyy):");
-        date = sdfd.parse(s.nextLine());//
+        System.out.println("Expense purchase date (yyyy-MM-dd):");
+        date = s.nextLine();
         System.out.println("Expense purchase time (HH:mm):");
-        time = sdft.parse(s.nextLine());
+        time = s.nextLine();
         System.out.println("Expense purchase place:");
         place = s.nextLine();
         System.out.println("Expense purchase location:");
@@ -114,7 +114,7 @@ public class ExpenseTracker {
     private static boolean storeExpense(Expense expense){
         Statement stmt = null;
         ResultSet rs = null;
-        if(expense.size()<1){
+        if(expense == null){
             return false;
         }else{
             try {

@@ -8,11 +8,9 @@ import com.lawson.expenseTracker.enums.ItemCategory;
 import com.lawson.expenseTracker.enums.PurchaseMethod;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -80,8 +78,8 @@ public class App {
         int counter=1;
         List<Item> eItems;
         double totalPrice = 0;
-        Date date;
-        Date time;
+        String date;
+        String time;
         String place;
         String location;
         String text;
