@@ -25,8 +25,6 @@ public class ExpenseTracker {
 
     public static boolean createExpense(){
         Scanner s = new Scanner(System.in);
-        SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
-        SimpleDateFormat sdft = new SimpleDateFormat("HH:mm");
         int counter=1;
         Expense expense;
         List<Item> eItems;
@@ -110,12 +108,22 @@ public class ExpenseTracker {
     private static boolean storeExpense(Expense expense){
         Statement stmt = null;
         ResultSet rs = null;
+        PreparedStatement ps = null;
         if(expense == null){
             return false;
         }else{
             try {
-                connection.createStatement();
-                rs = stmt.executeQuery("SELECT * FROM expense");
+                //stmt = connection.createStatement();//executeUpdate instead of query
+                ps = connection.prepareStatement("INSERT INTO expenses (category, purchaseMethod, totalPrice, date, place, location, time) VALUES ("
+                        + expense.getCategory() + ", " + expense.getPurchaseMethod() + ", " + expense.getTotalPrice() + ", " + expense.getDate() +
+                        ", " + expense.getPurchasePlace() + ", " + expense.getPurchaseLocation() + ", ?)",Statement.RETURN_GENERATED_KEYS);
+//                stmt.executeUpdate("INSERT INTO expenses (category, purchaseMethod, totalPrice, date, place, location, time) VALUES ("
+//                        + expense.getCategory() + ", " + expense.getPurchaseMethod() + ", " + expense.getTotalPrice() + ", " + expense.getDate() +
+//                        ", " + expense.getPurchasePlace() + ", " + expense.getPurchaseLocation() + ", " + expense.getPurchaseTime() + ")",Statement.RETURN_GENERATED_KEYS);// insert into expense table expenses and items into item table
+                ps.setTime(8,expense.getPurchaseTime());
+                ps.executeUpdate();
+                //String insertExpenses;
+                //for()
                 return true;
             }catch (SQLException s){
                 s.printStackTrace();
@@ -128,7 +136,7 @@ public class ExpenseTracker {
                 }
                 if(stmt!=null) {
                     try {
-                        stmt.close();
+                        ps.close();
                     } catch (SQLException s) {
                     }
                 }

@@ -3,6 +3,8 @@ package com.lawson.expenseTracker.model;
 import com.lawson.expenseTracker.enums.ExpenseCategory;
 import com.lawson.expenseTracker.enums.PurchaseMethod;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.List;
 
 public class Expense {
@@ -19,14 +21,14 @@ public class Expense {
     private ExpenseCategory category;
     private PurchaseMethod purchaseMethod;
     private double totalPrice;
-    private String date;
-    private String purchaseTime;
+    private Date date;
+    private Time purchaseTime;
     private String purchasePlace;
     private String purchaseLocation;
 
     public Expense(){}
 
-    public Expense(List<Item> items, ExpenseCategory category, PurchaseMethod purchaseMethod, double totalPrice, String date, String purchaseTime, String purchasePlace, String purchaseLocation) {
+    public Expense(List<Item> items, ExpenseCategory category, PurchaseMethod purchaseMethod, double totalPrice, Date date, Time purchaseTime, String purchasePlace, String purchaseLocation) {
         this.items = items;
         this.category = category;
         this.purchaseMethod = purchaseMethod;
@@ -77,19 +79,19 @@ public class Expense {
         this.purchaseMethod = purchaseMethod;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public String getPurchaseTime() {
+    public Time getPurchaseTime() {
         return purchaseTime;
     }
 
-    public void setPurchaseTime(String purchaseTime) {
+    public void setPurchaseTime(Time purchaseTime) {
         this.purchaseTime = purchaseTime;
     }
 

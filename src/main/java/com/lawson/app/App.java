@@ -1,5 +1,6 @@
 package com.lawson.app;
 
+import com.lawson.expenseTracker.database.ExpenseTracker;
 import com.lawson.expenseTracker.database.SqlConnector;
 import com.lawson.expenseTracker.enums.ExpenseCategory;
 import com.lawson.expenseTracker.model.Expense;
@@ -8,6 +9,10 @@ import com.lawson.expenseTracker.enums.ItemCategory;
 import com.lawson.expenseTracker.enums.PurchaseMethod;
 
 import java.io.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,9 +28,7 @@ import java.util.Scanner;
 public class App {
 
     public static void main(String[] args) {
-        Math.abs(10);
-        SqlConnector.connect();
-        //readExpenses(); //Type check entries
+        readExpenses(); //Type check entries
     }
 
     private static void readExpenses(){// Debating on if this should call more than one method or have this method return a type
@@ -34,95 +37,104 @@ public class App {
         String text;
         Expense expense = null;
         List<Item> items = null;
+        Connection conn = SqlConnector.connect();
+        ExpenseTracker.setConnection(conn);
+        ExpenseTracker.createExpense();
+        try {
+            conn.close();
+        }catch(SQLException sq){
+            sq.printStackTrace();
+        }
 
-        do{
-            try{
-                expense = enterExpenses();
-                items = expense.getItems();
-            } catch(ParseException | NullPointerException pe){
-                pe.printStackTrace();
-            }
-
-            System.out.println("Help:\n" +
-                    "Press \"enter\" to continue\n"+
-                    "Type \"-e\" to exit.\n");
-            text = s.nextLine();
-
-            try {
-                for (Item i : items) {
-                    System.out.println(i.getName());
-                    System.out.println(i.getDescription());
-                    System.out.println(i.getCategory());
-                    System.out.println(i.getPrice());
-                }
-                System.out.println();
-                System.out.println(expense.getCategory());
-                System.out.println(expense.getPurchaseMethod());
-                System.out.println(expense.getTotalPrice());
-                System.out.println(expense.getDate());
-                System.out.println(expense.getPurchasePlace());
-                System.out.println(expense.getPurchaseLocation());
-            }catch(NullPointerException e){
-                e.printStackTrace();
-            }
-            expenses.add(expense);
-        }while(!text.equals("-e")); //Get action listener to listen for enter button press
-        s.close();
-        storeExpenses(expenses);
+//        do{
+//            try{
+//                expense = enterExpenses();
+//                exe
+//                items = expense.getItems();
+//            } catch(ParseException | NullPointerException pe){
+//                pe.printStackTrace();
+//            }
+//
+//            System.out.println("Help:\n" +
+//                    "Press \"enter\" to continue\n"+
+//                    "Type \"-e\" to exit.\n");
+//            text = s.nextLine();
+//
+//            try {
+//                for (Item i : items) {
+//                    System.out.println(i.getName());
+//                    System.out.println(i.getDescription());
+//                    System.out.println(i.getCategory());
+//                    System.out.println(i.getPrice());
+//                }
+//                System.out.println();
+//                System.out.println(expense.getCategory());
+//                System.out.println(expense.getPurchaseMethod());
+//                System.out.println(expense.getTotalPrice());
+//                System.out.println(expense.getDate());
+//                System.out.println(expense.getPurchasePlace());
+//                System.out.println(expense.getPurchaseLocation());
+//            }catch(NullPointerException e){
+//                e.printStackTrace();
+//            }
+//            expenses.add(expense);
+//        }while(!text.equals("-e")); //Get action listener to listen for enter button press
+//        s.close();
+//        storeExpenses(expenses);
     }
 
-    private static Expense enterExpenses() throws ParseException {
-        Scanner s = new Scanner(System.in);
-        SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
-        SimpleDateFormat sdft = new SimpleDateFormat("HH:mm");
-        int counter=1;
-        List<Item> eItems;
-        double totalPrice = 0;
-        String date;
-        String time;
-        String place;
-        String location;
-        String text;
-        String[] items;
-
-        System.out.println("Enter Expense Information:");
-        System.out.println("Items (Enter as comma separated list): ");
-        text = s.nextLine();
-        items = text.split(",");
-        // if contains number,  character, or excessive spaces in name
-        eItems = enterItems(items, s);
-
-        System.out.println("Expense Category: ");
-        for(ExpenseCategory e: ExpenseCategory.values()){
-            System.out.println("Enter " + counter + " - " + e);
-            counter++;
-        }
-        ExpenseCategory eCat = convertExpenseCategory(s.nextInt());
-        counter =1;
-
-        System.out.println("Expense Purchase Method: ");
-        for(PurchaseMethod p: PurchaseMethod.values()){
-            System.out.println("Enter " + counter + " - " + p);
-            counter++;
-        }
-        PurchaseMethod purchaseMethod = convertPurchaseMethodCategory(s.nextInt());
-        s.nextLine();
-
-        for (Item eItem : eItems) {
-            totalPrice += eItem.getPrice();
-        }
-        System.out.println("Expense purchase date (MM-dd-yyyy):");
-        date = sdfd.parse(s.nextLine());
-        System.out.println("Expense purchase time (HH:mm):");
-        time = sdft.parse(s.nextLine());
-        System.out.println("Expense purchase place:");
-        place = s.nextLine();
-        System.out.println("Expense purchase location:");
-        location = s.nextLine();
-
-        return new Expense(eItems, eCat, purchaseMethod, totalPrice, date, time,
-                place, location);
-    }
+//    private static Expense enterExpenses() throws ParseException {
+//        Scanner s = new Scanner(System.in);
+//        SimpleDateFormat sdfd = new SimpleDateFormat("MM-dd-yyyy");
+//        SimpleDateFormat sdft = new SimpleDateFormat("HH:mm");
+//        int counter=1;
+//        List<Item> eItems;
+//        double totalPrice = 0;
+//        Date date;
+//        Time time;
+//        String place;
+//        String location;
+//        String text;
+//        String[] items;
+//
+//        System.out.println("Enter Expense Information:");
+//        System.out.println("Items (Enter as comma separated list): ");
+//        text = s.nextLine();
+//        items = text.split(",");
+//        // if contains number,  character, or excessive spaces in name
+//        eItems = enterItems(items, s);
+//
+//        System.out.println("Expense Category: ");
+//        for(ExpenseCategory e: ExpenseCategory.values()){
+//            System.out.println("Enter " + counter + " - " + e);
+//            counter++;
+//        }
+//        ExpenseCategory eCat = convertExpenseCategory(s.nextInt());
+//        counter =1;
+//
+//        System.out.println("Expense Purchase Method: ");
+//        for(PurchaseMethod p: PurchaseMethod.values()){
+//            System.out.println("Enter " + counter + " - " + p);
+//            counter++;
+//        }
+//        PurchaseMethod purchaseMethod = convertPurchaseMethodCategory(s.nextInt());
+//        s.nextLine();
+//
+//        for (Item eItem : eItems) {
+//            totalPrice += eItem.getPrice();
+//        }
+//        System.out.println("Expense purchase date (MM-dd-yyyy):");
+//        date = sdfd.parse(s.nextLine());
+//        System.out.println("Expense purchase time (HH:mm):");
+//        time = sdft.parse(s.nextLine());
+//        System.out.println("Expense purchase place:");
+//        place = s.nextLine();
+//        System.out.println("Expense purchase location:");
+//        location = s.nextLine();
+//
+//        return new Expense(eItems, eCat, purchaseMethod, totalPrice, date, time,
+//                place, location);
+//    }
 
     private static List<Item> enterItems(String[] items, Scanner s) {
         List<Item> eItems = new ArrayList<>();

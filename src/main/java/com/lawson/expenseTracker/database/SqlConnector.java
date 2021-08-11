@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SqlConnector {
-    private static String url = "jdbc:mysql://localhost:3306/giraffe";
+    private static String url = "jdbc:mysql://localhost:3306/expense_tracker";
     private static String root = "root";
     private static String password = "090796";
 
