@@ -114,12 +114,17 @@ public class ExpenseTracker {
         }else{
             try {
                 //stmt = connection.createStatement();//executeUpdate instead of query
-                ps = connection.prepareStatement("INSERT INTO expenses (category, purchaseMethod, totalPrice, date, place, location, time) VALUES ("
-                        + expense.getCategory() + ", " + expense.getPurchaseMethod() + ", " + expense.getTotalPrice() + ", " + expense.getDate() +
-                        ", " + expense.getPurchasePlace() + ", " + expense.getPurchaseLocation() + ", ?)",Statement.RETURN_GENERATED_KEYS);
+                ps = connection.prepareStatement("INSERT INTO expenses VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 //                stmt.executeUpdate("INSERT INTO expenses (category, purchaseMethod, totalPrice, date, place, location, time) VALUES ("
 //                        + expense.getCategory() + ", " + expense.getPurchaseMethod() + ", " + expense.getTotalPrice() + ", " + expense.getDate() +
 //                        ", " + expense.getPurchasePlace() + ", " + expense.getPurchaseLocation() + ", " + expense.getPurchaseTime() + ")",Statement.RETURN_GENERATED_KEYS);// insert into expense table expenses and items into item table
+                ps.setInt(1, PreparedStatement.RETURN_GENERATED_KEYS);
+                ps.setString(2, expense.getCategory().toString());
+                ps.setString(3, expense.getPurchaseMethod().toString());
+                ps.setDouble(4, expense.getTotalPrice());
+                ps.setDate(5, expense.getDate());
+                ps.setString(6,expense.getPurchasePlace());
+                ps.setString(7, expense.getPurchaseLocation());
                 ps.setTime(8,expense.getPurchaseTime());
                 ps.executeUpdate();
                 //String insertExpenses;
