@@ -7,14 +7,10 @@ import com.lawson.expenseTracker.model.Expense;
 import com.lawson.expenseTracker.model.Item;
 
 import javax.swing.plaf.nimbus.State;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -35,8 +31,8 @@ public class ExpenseTracker {
         Expense expense;
         List<Item> eItems;
         double totalPrice = 0;
-        String date;
-        String time;
+        Date date;
+        Time time;
         String place;
         String location;
         String text;
@@ -69,9 +65,9 @@ public class ExpenseTracker {
             totalPrice += eItem.getPrice();
         }
         System.out.println("Expense purchase date (yyyy-MM-dd):");
-        date = s.nextLine();
+        date = Date.valueOf(s.nextLine());
         System.out.println("Expense purchase time (HH:mm):");
-        time = s.nextLine();
+        time = Time.valueOf(s.nextLine());
         System.out.println("Expense purchase place:");
         place = s.nextLine();
         System.out.println("Expense purchase location:");
