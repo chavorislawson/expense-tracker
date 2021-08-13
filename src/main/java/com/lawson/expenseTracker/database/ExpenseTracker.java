@@ -106,8 +106,6 @@ public class ExpenseTracker {
     }
 
     private static boolean storeExpense(Expense expense){
-        Statement stmt = null;
-        ResultSet rs = null;
         PreparedStatement ps = null;
         if(expense == null){
             return false;
@@ -115,9 +113,6 @@ public class ExpenseTracker {
             try {
                 //stmt = connection.createStatement();//executeUpdate instead of query
                 ps = connection.prepareStatement("INSERT INTO expenses VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-//                stmt.executeUpdate("INSERT INTO expenses (category, purchaseMethod, totalPrice, date, place, location, time) VALUES ("
-//                        + expense.getCategory() + ", " + expense.getPurchaseMethod() + ", " + expense.getTotalPrice() + ", " + expense.getDate() +
-//                        ", " + expense.getPurchasePlace() + ", " + expense.getPurchaseLocation() + ", " + expense.getPurchaseTime() + ")",Statement.RETURN_GENERATED_KEYS);// insert into expense table expenses and items into item table
                 ps.setInt(1, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps.setString(2, expense.getCategory().toString());
                 ps.setString(3, expense.getPurchaseMethod().toString());
@@ -127,19 +122,47 @@ public class ExpenseTracker {
                 ps.setString(7, expense.getPurchaseLocation());
                 ps.setTime(8,expense.getPurchaseTime());
                 ps.executeUpdate();
-                //String insertExpenses;
-                //for()
+
+                ResultSet rs = ps.getGeneratedKeys();
+
+
+                return storeItems(expense.getItems(), rs);
+            }catch (SQLException s){
+                s.printStackTrace();
+            }finally {
+                if(ps!=null) {
+                    try {
+                        ps.close();
+                    } catch (SQLException s) {
+                    }
+                }
+            }
+            return true;
+        }
+    }
+    private static boolean storeItems(List<Item> items, ResultSet rs){
+        PreparedStatement ps = null;
+        if(items == null || items.size() <= 0){
+            return false;
+        }else{
+            try {
+                for(Item i: items) {//May need to pass generated Expense key into here
+                    // Statement stmt = connection.createStatement();
+                    //rs.getInt(1);
+                    ps = connection.prepareStatement("INSERT INTO items VALUES (?, ?, ?, ?, ?, ?)");
+                    ps.setInt(1, PreparedStatement.RETURN_GENERATED_KEYS);
+                    ps.setInt(2, rs.getInt(1));
+                    ps.setString(3, i.getName());
+                    ps.setString(4, i.getDescription());
+                    ps.setString(5, i.getCategory().toString());
+                    ps.setDouble(6, i.getPrice());
+                    ps.executeUpdate();
+                }
                 return true;
             }catch (SQLException s){
                 s.printStackTrace();
             }finally {
-                if(rs!=null) {
-                    try {
-                        rs.close();
-                    } catch (SQLException s) {
-                    }
-                }
-                if(stmt!=null) {
+                if(ps!=null) {
                     try {
                         ps.close();
                     } catch (SQLException s) {
