@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SqlConnector {
-    private static String url = "jdbc:mysql://localhost:3306/expense_tracker";
-    private static String root = "root";
-    private static String password = "090796";
+    private static String url = System.getenv("MYSQL_URL");
+    private static String root = System.getenv("MYSQL_USER_NAME");
+    private static String password = System.getenv("MYSQL_USER_PASSWORD");
 
 //    public void setUrl(String url) {
 //        this.url = url;
@@ -20,8 +20,6 @@ public class SqlConnector {
 //    public void setPassword(String password) {
 //        this.password = password;
 //    }
-
-
 
     private SqlConnector() {
     }

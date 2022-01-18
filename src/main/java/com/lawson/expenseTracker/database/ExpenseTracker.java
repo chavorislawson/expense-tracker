@@ -39,6 +39,7 @@ public class ExpenseTracker {
         System.out.println("Enter Expense Information:");
         System.out.println("Items (Enter as comma separated list): ");
         text = s.nextLine();
+        //if(text.co) //either contains or contentEquals fdor integer or decimal values
         items = text.split(",");
         // if contains number,  character, or excessive spaces in name
         eItems = createItems(items, s);
@@ -64,7 +65,7 @@ public class ExpenseTracker {
         }
         System.out.println("Expense purchase date (yyyy-MM-dd):");
         date = Date.valueOf(s.nextLine());
-        System.out.println("Expense purchase time (HH:mm):");
+        System.out.println("Expense purchase time (HH:mm:ss):");
         time = Time.valueOf(s.nextLine());
         System.out.println("Expense purchase place:");
         place = s.nextLine();
@@ -77,7 +78,7 @@ public class ExpenseTracker {
         return storeExpense(expense);
     }
 
-    private static List<Item> createItems(String[] items, Scanner s){//Idk about this one since you items should be attached to expenses
+    private static List<Item> createItems(String[] items, Scanner s){
         List<Item> eItems = new ArrayList<>();
         String description;
         ItemCategory category;
@@ -111,20 +112,18 @@ public class ExpenseTracker {
             return false;
         }else{
             try {
-                //stmt = connection.createStatement();//executeUpdate instead of query
-                ps = connection.prepareStatement("INSERT INTO expenses VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                ps.setInt(1, PreparedStatement.RETURN_GENERATED_KEYS);
-                ps.setString(2, expense.getCategory().toString());
-                ps.setString(3, expense.getPurchaseMethod().toString());
-                ps.setDouble(4, expense.getTotalPrice());
-                ps.setDate(5, expense.getDate());
-                ps.setString(6,expense.getPurchasePlace());
-                ps.setString(7, expense.getPurchaseLocation());
-                ps.setTime(8,expense.getPurchaseTime());
+                ps = connection.prepareStatement("INSERT INTO expenses(category, purchaseMethod, totalPrice, date, place, location, time) VALUES (?, ?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, expense.getCategory().toString());
+                ps.setString(2, expense.getPurchaseMethod().toString());
+                ps.setDouble(3, expense.getTotalPrice());
+                ps.setDate(4, expense.getDate());
+                ps.setString(5,expense.getPurchasePlace());
+                ps.setString(6, expense.getPurchaseLocation());
+                ps.setTime(7,expense.getPurchaseTime());
                 ps.executeUpdate();
 
                 ResultSet rs = ps.getGeneratedKeys();
-
+                rs.next();
 
                 return storeItems(expense.getItems(), rs);
             }catch (SQLException s){
@@ -146,16 +145,13 @@ public class ExpenseTracker {
             return false;
         }else{
             try {
-                for(Item i: items) {//May need to pass generated Expense key into here
-                    // Statement stmt = connection.createStatement();
-                    //rs.getInt(1);
-                    ps = connection.prepareStatement("INSERT INTO items VALUES (?, ?, ?, ?, ?, ?)");
-                    ps.setInt(1, PreparedStatement.RETURN_GENERATED_KEYS);
-                    ps.setInt(2, rs.getInt(1));
-                    ps.setString(3, i.getName());
-                    ps.setString(4, i.getDescription());
-                    ps.setString(5, i.getCategory().toString());
-                    ps.setDouble(6, i.getPrice());
+                for(Item i: items) {
+                    ps = connection.prepareStatement("INSERT INTO items(expense_id, name, description, category, price) VALUES (?, ?, ?, ?, ?)",PreparedStatement.RETURN_GENERATED_KEYS);
+                    ps.setInt(1, rs.getInt(1));
+                    ps.setString(2, i.getName());
+                    ps.setString(3, i.getDescription());
+                    ps.setString(4, i.getCategory().toString());
+                    ps.setDouble(5, i.getPrice());
                     ps.executeUpdate();
                 }
                 return true;
